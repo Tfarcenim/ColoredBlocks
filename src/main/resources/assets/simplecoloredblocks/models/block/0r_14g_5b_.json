@@ -1,0 +1,6 @@
+{
+  "parent": "simplecoloredblocks:block/cube_all_tinted",
+  "textures": {
+    "all": "block/0r_14g_5b_"
+  }
+}
