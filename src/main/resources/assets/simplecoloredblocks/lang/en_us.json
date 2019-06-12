@@ -4095,6 +4095,7 @@
   "block.simplecoloredblocks.15r_15g_13b_": "Red 15, Green 15, Blue 13 Block",
   "block.simplecoloredblocks.15r_15g_14b_": "Red 15, Green 15, Blue 14 Block",
   "block.simplecoloredblocks.15r_15g_15b_": "Red 15, Green 15, Blue 15 Block",
+  "item.simplecoloredblocks.color_wheel" : "Color Wheel",
   "text.simplecoloredblocks.color_wheel_container.preview" : "Preview",
   "text.simplecoloredblocks.color_wheel_container.title": "Color Wheel"
 }

@@ -16,5 +16,10 @@ public class GreenSlot extends Slot {
   public boolean isItemValid(ItemStack p_75214_1_) {
     return p_75214_1_.getItem().isIn(Tags.Items.DYES_GREEN);
   }
+
+  @Override
+  public int getSlotStackLimit() {
+    return 15;
+  }
 }
 

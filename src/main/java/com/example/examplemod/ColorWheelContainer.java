@@ -98,14 +98,8 @@ public class ColorWheelContainer extends Container {
       ItemStack itemstack1 = slot.getStack();
       itemstack = itemstack1.copy();
 
-      if (index == 2) {
-        if (!this.mergeItemStack(itemstack1, 3, 39, true)) {
-          return ItemStack.EMPTY;
-        }
-
-        slot.onSlotChange(itemstack1, itemstack);
-      } else if (index != 0 && index != 1) {
-        if (index < 39 && !this.mergeItemStack(itemstack1, 0, 2, false)) {
+      if (index != 0 && index != 1 && index != 2) {
+        if (index < 39 && !this.mergeItemStack(itemstack1, 0, 3, false)) {
           return ItemStack.EMPTY;
         }
       } else if (!this.mergeItemStack(itemstack1, 3, 39, false)) {
@@ -121,7 +115,6 @@ public class ColorWheelContainer extends Container {
       if (itemstack1.getCount() == itemstack.getCount()) {
         return ItemStack.EMPTY;
       }
-
       slot.onTake(player, itemstack1);
     }
 

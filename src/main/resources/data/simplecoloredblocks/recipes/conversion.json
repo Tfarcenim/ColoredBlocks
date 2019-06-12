@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simpleblock",
+  "ingredients": [
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "item": "simplecoloredblocks:color_wheel"
+    }
+  ],
+  "result": {
+    "item": "simplecoloredblocks:7r_7g_7b_"
+  }
+}
