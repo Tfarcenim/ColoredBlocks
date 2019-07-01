@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "simplecoloredblocks:block/10r_10g_6b_"
+      "model": "simplecoloredblocks:block/cube_all_tinted"
     }
   }
 }
