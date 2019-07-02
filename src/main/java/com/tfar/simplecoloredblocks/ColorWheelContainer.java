@@ -7,8 +7,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
@@ -20,7 +18,6 @@ public class ColorWheelContainer extends Container {
   private final ItemStack heldItem;
 
 
-  @OnlyIn(Dist.CLIENT)
   public ColorWheelContainer(int id, PlayerInventory playerInventory) {
     this(id, playerInventory, playerInventory.currentItem, playerInventory.getCurrentItem());
   }
@@ -32,17 +29,30 @@ public class ColorWheelContainer extends Container {
 
     this.addSlot(new Slot(this.inputSlots, 0, 26, 20) {
       @Override
+      public int getSlotStackLimit() {
+        return Configs.GRANULARITY - 1;
+      }
+
+      @Override
       public boolean isItemValid(ItemStack stack) {
         return stack.getItem().isIn(Tags.Items.DYES_RED);
       }
     });
     this.addSlot(new Slot(this.inputSlots, 1, 36 + 26, 20) {
       @Override
+      public int getSlotStackLimit() {
+        return Configs.GRANULARITY - 1;
+      }
+      @Override
       public boolean isItemValid(ItemStack stack) {
         return stack.getItem().isIn(Tags.Items.DYES_GREEN);
       }
     });
     this.addSlot(new Slot(this.inputSlots, 2, 36 * 2 + 26, 20) {
+      @Override
+      public int getSlotStackLimit() {
+        return Configs.GRANULARITY - 1;
+      }
       @Override
       public boolean isItemValid(ItemStack stack) {
         return stack.getItem().isIn(Tags.Items.DYES_BLUE);
@@ -134,7 +144,6 @@ public class ColorWheelContainer extends Container {
       } else {
         slot.onSlotChanged();
       }
-
       if (itemstack1.getCount() == itemstack.getCount()) {
         return ItemStack.EMPTY;
       }

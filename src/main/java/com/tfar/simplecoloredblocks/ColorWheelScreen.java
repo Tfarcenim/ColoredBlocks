@@ -45,11 +45,11 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
     int j = (this.height - this.ySize) / 2;
     this.blit(i, j, 0, 0, this.xSize, this.ySize);
 
-    int r = Math.min(this.container.getSlot(0).getStack().getCount(),15);
-    int g = Math.min(this.container.getSlot(1).getStack().getCount(),15);
-    int b = Math.min(this.container.getSlot(2).getStack().getCount(),15);
+    float r = (float)this.container.getSlot(0).getStack().getCount() / Configs.GRANULARITY;
+    float g = (float)this.container.getSlot(1).getStack().getCount()  / Configs.GRANULARITY;
+    float b = (float)this.container.getSlot(2).getStack().getCount()  / Configs.GRANULARITY;
 
-    GlStateManager.color3f((r<<4)/256f,(g<<4)/256f,(b<<4)/256f);
+    GlStateManager.color3f(r,g,b);
     this.blit(i + 134, j + 20, 134, 20, 16, 16);
 
   }
@@ -75,7 +75,6 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
    */
   @Override
   public void sendSlotContents(Container containerToSend, int slotInd, ItemStack stack) {
-
   }
 
   /**
@@ -89,7 +88,6 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
    */
   @Override
   public void sendWindowProperty(Container containerIn, int varToUpdate, int newValue) {
-
   }
 
   @Override
@@ -99,6 +97,5 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
     this.renderHoveredToolTip(mouseX, mouseY);
     GlStateManager.disableLighting();
     GlStateManager.disableBlend();
-   // this.nameField.render(mouseX, mouseY, partialTicks);
   }
 }

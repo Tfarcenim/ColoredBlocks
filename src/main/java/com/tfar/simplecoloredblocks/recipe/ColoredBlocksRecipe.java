@@ -1,11 +1,10 @@
 package com.tfar.simplecoloredblocks.recipe;
 
 import com.tfar.simplecoloredblocks.ItemColorWheel;
-import com.tfar.simplecoloredblocks.SimpleBlock;
 import com.tfar.simplecoloredblocks.SimpleColoredBlocks;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -21,24 +20,30 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
     super(idIn);
   }
 
+
+  public static final ItemStack DEBUG = new ItemStack(Items.NETHER_STAR);
   /**
    * Used to check if a recipe matches current crafting inventory
    *
    * @param inv
-   * @param worldIn
+   * @param world
    */
   @Override
-  public boolean matches(CraftingInventory inv, World worldIn) {
+  public boolean matches(@Nonnull CraftingInventory inv,@Nonnull World world) {
     List<ItemStack> notemptyitemstacks = new ArrayList<>();
 
     for(int j = 0; j < inv.getSizeInventory(); ++j) {
       ItemStack stack = inv.getStackInSlot(j);
-      if (stack.getItem() instanceof ItemColorWheel ||
-              stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof SimpleBlock)
+      if (!stack.isEmpty())
         notemptyitemstacks.add(stack);
     }
-    return notemptyitemstacks.size() == 2 && !bothEqual(notemptyitemstacks.get(0), notemptyitemstacks.get(1));
+    if (notemptyitemstacks.size() != 2)
+    return false;
 
+    final ItemStack stack0 = notemptyitemstacks.get(0);
+    final ItemStack stack1 = notemptyitemstacks.get(1);
+
+    return !bothEqual(stack0, stack1);
   }
 
   /**
@@ -54,28 +59,28 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
 
     for(int j = 0; j < inv.getSizeInventory(); ++j) {
       ItemStack stack = inv.getStackInSlot(j);
-      if (stack.getItem() instanceof ItemColorWheel ||
-              stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof SimpleBlock)
+      if (!stack.isEmpty())
         notemptyitemstacks.add(stack);
     }
-    if (notemptyitemstacks.size() != 2)return ItemStack.EMPTY;
+    if (notemptyitemstacks.size() != 2)return DEBUG;
+    final ItemStack stack0 = notemptyitemstacks.get(0);
+    final ItemStack stack1 = notemptyitemstacks.get(1);
 
-    ItemStack stack0 = notemptyitemstacks.get(0);
-    ItemStack stack1 = notemptyitemstacks.get(1);
+    if (bothEqual(stack0,stack1)) return DEBUG;
 
-    if (bothEqual(stack0,stack1)) return ItemStack.EMPTY;
+    ItemStack colorWheel = getColorWheel(stack0,stack1);
 
-    stack0 = getColorWheel(stack0,stack1);
+    ItemStack block = getBlock(stack0,stack1);
 
     int type = 0;
+    if (block.getItem().getRegistryName().getPath().endsWith("glass"))
+     type = 1;
 
-    if (stack1.getItem().getRegistryName().getPath().endsWith("glass")) type = 1;
-
-    int[] colors = getcolors(stack0);
+    int[] colors = getColors(colorWheel);
     return setColors(colors,type);
   }
 
-  public static int[] getcolors(ItemStack wheel) {
+  public static int[] getColors(ItemStack wheel) {
     int[] colors = new int[3];
     colors[0] = wheel.getOrCreateTag().getInt("red");
     colors[1] = wheel.getOrCreateTag().getInt("green");
@@ -92,6 +97,10 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
 
   private static ItemStack getColorWheel(ItemStack stack0, ItemStack stack1) {
     return isColorWheel(stack0) ? stack0 : stack1;
+  }
+
+  private static ItemStack getBlock(ItemStack stack0, ItemStack stack1) {
+    return isSimple(stack0) ? stack0 : stack1;
   }
 
   public static boolean bothEqual(ItemStack stack0, ItemStack stack1){
@@ -111,7 +120,7 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
   }
 
   public static boolean isSimple(ItemStack stack){
-    return stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof SimpleBlock;
+    return !(stack.getItem() instanceof ItemColorWheel);
   }
 
   @Nonnull
@@ -122,6 +131,6 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
 
   @Override
   public boolean canFit(int width, int height) {
-    return width > 1 || height > 1;
+    return width * height > 1;
   }
 }

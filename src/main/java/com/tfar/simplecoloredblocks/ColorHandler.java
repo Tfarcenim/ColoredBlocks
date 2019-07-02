@@ -38,21 +38,22 @@ public class ColorHandler {
       itemColors.register(itemBlockColor, block);
 
     final IItemColor itemColor = ColorHandler::getColor;
-
     itemColors.register(itemColor,SimpleColoredBlocks.color_wheel);
-
   }
 
-  private static int getColorWheel(ItemStack stack){
-    return stack.hasTag() ? (stack.getOrCreateTag().getInt("red") << 20) + (stack.getOrCreateTag().getInt("green") << 12) + (stack.getOrCreateTag().getInt("blue") << 4) : 0xFFFFFF;
+  private static int getColorFromWheel(ItemStack stack){
+    return (stack.getOrCreateTag().getInt("red") * (0x100/Configs.GRANULARITY) << 16)
+            + (stack.getOrCreateTag().getInt("green") * (0x100/Configs.GRANULARITY) << 8)
+            + stack.getOrCreateTag().getInt("blue") * (0x100/Configs.GRANULARITY);
   }
 
   private static int getColor(BlockState state){
-    return (((SimpleBlock)state.getBlock()).r << 20) + (((SimpleBlock)state.getBlock()).g << 12) + (((SimpleBlock)state.getBlock()).b << 4
-    );
+    return (((SimpleBlock) state.getBlock()).r * (0x100 / Configs.GRANULARITY) << 16)
+            + (((SimpleBlock) state.getBlock()).g * (0x100 / Configs.GRANULARITY) << 8)
+            + ((SimpleBlock) state.getBlock()).b * (0x100 / Configs.GRANULARITY);
   }
 
   private static int getColor(ItemStack stack, int tintIndex) {
-    return getColorWheel(stack);
+    return getColorFromWheel(stack);
   }
 }

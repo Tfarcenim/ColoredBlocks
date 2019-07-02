@@ -39,13 +39,15 @@ import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static com.tfar.simplecoloredblocks.Configs.*;
+
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(SimpleColoredBlocks.MODID)
 public class SimpleColoredBlocks {
   // Directly reference a log4j logger.
   public static final String MODID = "simplecoloredblocks";
-  private static final Logger LOGGER = LogManager.getLogger();
+  public static final Logger LOGGER = LogManager.getLogger();
 
   public static final String WHEEL = "color_wheel_container";
 
@@ -111,13 +113,15 @@ public class SimpleColoredBlocks {
     @SubscribeEvent
     public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 
+      handleConfig();
+
       IForgeRegistry<Block> registry = blockRegistryEvent.getRegistry();
 
       Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
-      for (int r = 0; r < 16; r++) {
-        for (int g = 0; g < 16; g++) {
-          for (int b = 0; b < 16; b++) {
+      for (int r = 0; r < GRANULARITY; r++) {
+        for (int g = 0; g < GRANULARITY; g++) {
+          for (int b = 0; b < GRANULARITY; b++) {
             registerBlock(new SimpleBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_", registry);
             registerBlock(new SimpleGlassBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
           }
@@ -178,41 +182,6 @@ public class SimpleColoredBlocks {
       SpecialRecipeSerializer<ColoredBlocksRecipe> obj = new SpecialRecipeSerializer<>(ColoredBlocksRecipe::new);
       obj.setRegistryName("crafting_simple");
       registry.register(obj);
-    }
-  }
-
-
-  @Mod.EventBusSubscriber
-  public static class test {
-    @SubscribeEvent
-    public static void place(BlockEvent.EntityPlaceEvent e) {
-
-      if (true) return;
-      Block block = e.getPlacedBlock().getBlock();
-      if (!(block instanceof SimpleBlock)) return;
-      SimpleBlock simple = (SimpleBlock) block;
-      if (simple.r != 0 || simple.g != 0 || simple.b != 0) return;
-
-      BlockPos start = e.getPos();
-
-      if (block instanceof SimpleGlassBlock) {
-        for (int r = 0; r < 16; r++)
-          for (int g = 0; g < 16; g++)
-            for (int b = 0; b < 16; b++) {
-              e.getWorld().setBlockState(start.offset(Direction.NORTH, r).offset(Direction.WEST, g).offset(Direction.UP, b),
-                      ForgeRegistries.BLOCKS.getValue(new
-                              ResourceLocation(MODID, r + "r_" + g + "g_" + b + "b_glass")).getDefaultState(), 0);
-            }
-        return;
-      }
-
-      for (int r = 0; r < 16; r++)
-        for (int g = 0; g < 16; g++)
-          for (int b = 0; b < 16; b++) {
-            e.getWorld().setBlockState(start.offset(Direction.NORTH, r).offset(Direction.WEST, g).offset(Direction.UP, b),
-                    ForgeRegistries.BLOCKS.getValue(new
-                            ResourceLocation(MODID, r + "r_" + g + "g_" + b + "b_")).getDefaultState(), 0);
-          }
     }
   }
 }
