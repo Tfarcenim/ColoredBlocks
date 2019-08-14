@@ -1,6 +1,11 @@
 package com.tfar.simplecoloredblocks;
 
-import com.tfar.simplecoloredblocks.recipe.ColoredBlocksRecipe;
+import com.tfar.simplecoloredblocks.block.SimpleBlock;
+import com.tfar.simplecoloredblocks.block.SimpleGlassBlock;
+import com.tfar.simplecoloredblocks.block.SimpleGlowingBlock;
+import com.tfar.simplecoloredblocks.recipe.GlassRecipe;
+import com.tfar.simplecoloredblocks.recipe.GlowingRecipe;
+import com.tfar.simplecoloredblocks.recipe.SimpleRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -13,14 +18,11 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -28,7 +30,6 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
@@ -54,13 +55,19 @@ public class SimpleColoredBlocks {
   @ObjectHolder(MODID + ":" + WHEEL)
   public static final ContainerType<ColorWheelContainer> TYPE = null;
 
-  @ObjectHolder(MODID + ":crafting_simple")
-  public static final IRecipeSerializer<?> RECIPE = null;
+  @ObjectHolder(MODID + ":simple")
+  public static final IRecipeSerializer<?> SIMPLE = null;
+
+  @ObjectHolder(MODID + ":glass")
+  public static final IRecipeSerializer<?> GLASS = null;
+
+  @ObjectHolder(MODID + ":glowing")
+  public static final IRecipeSerializer<?> GLOWING = null;
 
   @ObjectHolder(MODID + ":" + "color_wheel")
   public static Item color_wheel = null;
 
-  public static final Set<Block> MOD_BLOCKS = new LinkedHashSet<>();
+  public static final Set<SimpleBlock> MOD_BLOCKS = new LinkedHashSet<>();
 
   public static final ItemGroup tab = new ItemGroup(MODID) {
     @Override
@@ -70,16 +77,6 @@ public class SimpleColoredBlocks {
   };
 
   public static SimpleColoredBlocks instance;
-
-
-  public static final String CHANNEL = MODID;
-  private static final String PROTOCOL_VERSION = "1.0";
-  public static SimpleChannel channel = NetworkRegistry.ChannelBuilder
-          .named(new ResourceLocation(MODID, CHANNEL))
-          .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-          .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-          .networkProtocolVersion(() -> PROTOCOL_VERSION)
-          .simpleChannel();
 
   public SimpleColoredBlocks() {
     instance = this;
@@ -91,7 +88,6 @@ public class SimpleColoredBlocks {
   }
 
   private void setup(final FMLCommonSetupEvent event) {
-    channel.registerMessage(0, OpenColorWheelInventory.class, OpenColorWheelInventory::encode, OpenColorWheelInventory::new, OpenColorWheelInventory::handle);
   }
 
   // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -119,11 +115,14 @@ public class SimpleColoredBlocks {
 
       Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
+      Block.Properties glowing = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F).lightValue(15);
+
       for (int r = 0; r < GRANULARITY; r++) {
         for (int g = 0; g < GRANULARITY; g++) {
           for (int b = 0; b < GRANULARITY; b++) {
             registerBlock(new SimpleBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_", registry);
             registerBlock(new SimpleGlassBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
+            registerBlock(new SimpleGlowingBlock(glowing,r,g,b),r + "r_" + g + "g_" + b + "b_glowing",registry);
           }
         }
       }
@@ -131,7 +130,7 @@ public class SimpleColoredBlocks {
 
     private static void registerBlock(Block block, String name, IForgeRegistry<Block> registry) {
       block.setRegistryName(name);
-      MOD_BLOCKS.add(block);
+      MOD_BLOCKS.add((SimpleBlock) block);
       registry.register(block);
     }
 
@@ -172,16 +171,18 @@ public class SimpleColoredBlocks {
       obj.setRegistryName(WHEEL);
 
       containerTypeRegister.getRegistry().register(obj);
-      ScreenManager.registerFactory(obj, ColorWheelScreen::new);
     }
 
     @SubscribeEvent
     public static void registerSerials(RegistryEvent.Register<IRecipeSerializer<?>> event) {
 
       IForgeRegistry<IRecipeSerializer<?>> registry = event.getRegistry();
-      SpecialRecipeSerializer<ColoredBlocksRecipe> obj = new SpecialRecipeSerializer<>(ColoredBlocksRecipe::new);
-      obj.setRegistryName("crafting_simple");
-      registry.register(obj);
+      SpecialRecipeSerializer<SimpleRecipe> simple = new SpecialRecipeSerializer<>(SimpleRecipe::new);
+      registry.register(simple.setRegistryName("simple"));
+      SpecialRecipeSerializer<GlassRecipe> glass = new SpecialRecipeSerializer<>(GlassRecipe::new);
+      registry.register(glass.setRegistryName("glass"));
+      SpecialRecipeSerializer<GlowingRecipe> glowing = new SpecialRecipeSerializer<>(GlowingRecipe::new);
+      registry.register(glowing.setRegistryName("glowing"));
     }
   }
 }
