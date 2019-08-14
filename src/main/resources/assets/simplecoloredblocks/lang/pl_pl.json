@@ -1,6 +1,7 @@
 {
   "block.simplecoloredblocks.simple": "Blok Czerwony %s, Zielony %s, Niebieski %s",
   "block.simplecoloredblocks.glass": "Szkło Czerwony %s, Zielony %s, Niebieski %s"
-
-
+  "item.simplecoloredblocks.color_wheel" : "Koło barwne",
+  "text.simplecoloredblocks.color_wheel_container.preview" : "Podgląd",
+  "text.simplecoloredblocks.color_wheel_container.title": "Koło barwne"
 }
