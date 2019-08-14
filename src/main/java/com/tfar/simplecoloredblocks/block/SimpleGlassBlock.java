@@ -1,4 +1,4 @@
-package com.tfar.simplecoloredblocks;
+package com.tfar.simplecoloredblocks.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;

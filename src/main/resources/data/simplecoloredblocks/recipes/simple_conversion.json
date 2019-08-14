@@ -1,12 +1,12 @@
 {
-  "type": "simplecoloredblocks:crafting_simple",
+  "type": "minecraft:crafting_shapeless",
   "group": "simpleblock",
   "ingredients": [
     {
       "item": "simplecoloredblocks:color_wheel"
     },
     {
-      "item": "simplecoloredblocks:0r_0g_0b_"
+      "tag": "forge:stone"
     }
   ],
   "result": {

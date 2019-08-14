@@ -1,0 +1,15 @@
+{
+  "type": "simplecoloredblocks:simple",
+  "group": "simpleblock",
+  "ingredients": [
+    {
+      "item": "simplecoloredblocks:color_wheel"
+    },
+    {
+      "item": "simplecoloredblocks:0r_0g_0b_"
+    }
+  ],
+  "result": {
+    "item": "simplecoloredblocks:0r_0g_0b_"
+  }
+}

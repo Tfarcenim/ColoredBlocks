@@ -2,9 +2,11 @@ package com.tfar.simplecoloredblocks.recipe;
 
 import com.tfar.simplecoloredblocks.ItemColorWheel;
 import com.tfar.simplecoloredblocks.SimpleColoredBlocks;
+import com.tfar.simplecoloredblocks.block.SimpleBlock;
+import com.tfar.simplecoloredblocks.block.SimpleGlassBlock;
+import net.minecraft.block.Block;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -15,13 +17,12 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColoredBlocksRecipe extends SpecialRecipe {
-  public ColoredBlocksRecipe(ResourceLocation idIn) {
+public class GlassRecipe extends SpecialRecipe {
+  public GlassRecipe(ResourceLocation idIn) {
     super(idIn);
   }
 
 
-  public static final ItemStack DEBUG = new ItemStack(Items.NETHER_STAR);
   /**
    * Used to check if a recipe matches current crafting inventory
    *
@@ -43,8 +44,10 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
     final ItemStack stack0 = notemptyitemstacks.get(0);
     final ItemStack stack1 = notemptyitemstacks.get(1);
 
-    return !bothEqual(stack0, stack1);
-  }
+    final ItemStack colorWheel = getColorWheel(stack0,stack1);
+    final ItemStack block = getBlock(stack0,stack1);
+
+    return !block.isEmpty() && !colorWheel.isEmpty();  }
 
   /**
    * Returns an Item that is the result of this recipe
@@ -62,25 +65,16 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
       if (!stack.isEmpty())
         notemptyitemstacks.add(stack);
     }
-    if (notemptyitemstacks.size() != 2)return DEBUG;
     final ItemStack stack0 = notemptyitemstacks.get(0);
     final ItemStack stack1 = notemptyitemstacks.get(1);
 
-    if (bothEqual(stack0,stack1)) return DEBUG;
-
     ItemStack colorWheel = getColorWheel(stack0,stack1);
 
-    ItemStack block = getBlock(stack0,stack1);
-
-    int type = 0;
-    if (block.getItem().getRegistryName().getPath().endsWith("glass"))
-     type = 1;
-
     int[] colors = getColors(colorWheel);
-    return setColors(colors,type);
+    return setColors(colors);
   }
 
-  public static int[] getColors(ItemStack wheel) {
+  private static int[] getColors(ItemStack wheel) {
     int[] colors = new int[3];
     colors[0] = wheel.getOrCreateTag().getInt("red");
     colors[1] = wheel.getOrCreateTag().getInt("green");
@@ -88,45 +82,26 @@ public class ColoredBlocksRecipe extends SpecialRecipe {
     return colors;
   }
 
-  public static ItemStack setColors(int[] colors,int type){
-    String name = colors[0]+"r_"+colors[1]+"g_"+colors[2]+"b_";
-    if (type == 1)name = name + "glass";
+  private static ItemStack setColors(int[] colors){
+    String name = colors[0] + "r_" + colors[1] + "g_" + colors[2] + "b_glass";
     ResourceLocation resourceLocation = new ResourceLocation(SimpleColoredBlocks.MODID,name);
     return new ItemStack(ForgeRegistries.ITEMS.getValue(resourceLocation));
   }
 
   private static ItemStack getColorWheel(ItemStack stack0, ItemStack stack1) {
-    return isColorWheel(stack0) ? stack0 : stack1;
+    return stack0.getItem() instanceof ItemColorWheel ? stack0 : stack1.getItem() instanceof ItemColorWheel ? stack1 : ItemStack.EMPTY;
+
   }
 
   private static ItemStack getBlock(ItemStack stack0, ItemStack stack1) {
-    return isSimple(stack0) ? stack0 : stack1;
+    return Block.getBlockFromItem(stack0.getItem()).getClass() == SimpleGlassBlock.class ? stack0 : Block.getBlockFromItem(stack1.getItem()).getClass() == SimpleGlassBlock.class ? stack1 : ItemStack.EMPTY;
   }
 
-  public static boolean bothEqual(ItemStack stack0, ItemStack stack1){
-    return bothSimple(stack0, stack1) || bothColorWheels(stack0, stack1);
-  }
-
-  public static boolean bothColorWheels(ItemStack stack0, ItemStack stack1){
-    return isColorWheel(stack0) && isColorWheel(stack1);
-  }
-
-  public static boolean bothSimple(ItemStack stack0, ItemStack stack1){
-   return isSimple(stack0) && isSimple(stack1);
-  }
-
-  public static boolean isColorWheel(ItemStack stack){
-    return stack.getItem() instanceof ItemColorWheel;
-  }
-
-  public static boolean isSimple(ItemStack stack){
-    return !(stack.getItem() instanceof ItemColorWheel);
-  }
 
   @Nonnull
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    return SimpleColoredBlocks.RECIPE;
+    return SimpleColoredBlocks.GLASS;
   }
 
   @Override

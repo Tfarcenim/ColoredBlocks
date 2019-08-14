@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,28 +34,11 @@ public class ItemColorWheel extends Item {
 
     if (!world.isRemote) {
       ItemStack stack = player.getHeldItem(hand);
-      return new ActionResult<>(openColorScreen(player, stack, world), stack);
 
-    //  NetworkHooks.openGui((ServerPlayerEntity) player, new ColorWheel(GuiHandler.COLOR_WHEEL_ID, world), data -> data.writeBlockPos(player.getPosition()));
+      NetworkHooks.openGui((ServerPlayerEntity) player, new Handler(), data -> data.writeBlockPos(player.getPosition()));
     }
     return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     //return super.onItemRightClick(world, player, hand);
-  }
-
-  private ActionResultType openColorScreen(PlayerEntity player, ItemStack stack, World world)
-  {
-    int slot = player.inventory.getSlotFor(stack);
-    if (slot == -1)
-      return ActionResultType.FAIL;
-
-    if (!world.isRemote && player instanceof ServerPlayerEntity)
-    {
-      Screens.openWheelScreen( (ServerPlayerEntity)player, slot);
-      SimpleColoredBlocks.channel.sendToServer(new OpenColorWheelInventory());
-
-    }
-
-    return ActionResultType.SUCCESS;
   }
 
   @Override
