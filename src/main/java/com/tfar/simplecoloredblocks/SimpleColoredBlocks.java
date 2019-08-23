@@ -3,6 +3,7 @@ package com.tfar.simplecoloredblocks;
 import com.tfar.simplecoloredblocks.block.SimpleBlock;
 import com.tfar.simplecoloredblocks.block.SimpleGlassBlock;
 import com.tfar.simplecoloredblocks.block.SimpleGlowingBlock;
+import com.tfar.simplecoloredblocks.block.SimpleGlowingGlassBlock;
 import com.tfar.simplecoloredblocks.recipe.GlassRecipe;
 import com.tfar.simplecoloredblocks.recipe.GlowingRecipe;
 import com.tfar.simplecoloredblocks.recipe.SimpleRecipe;
@@ -10,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -18,7 +18,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,19 +27,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.tfar.simplecoloredblocks.Configs.*;
+import static com.tfar.simplecoloredblocks.Configs.GRANULARITY;
+import static com.tfar.simplecoloredblocks.Configs.handleConfig;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -123,6 +120,7 @@ public class SimpleColoredBlocks {
             registerBlock(new SimpleBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_", registry);
             registerBlock(new SimpleGlassBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
             registerBlock(new SimpleGlowingBlock(glowing,r,g,b),r + "r_" + g + "g_" + b + "b_glowing",registry);
+            registerBlock(new SimpleGlowingGlassBlock(glowing,r,g,b),r + "r_" + g + "g_" + b + "b_glowing_glass",registry);
           }
         }
       }

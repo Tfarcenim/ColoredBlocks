@@ -22,7 +22,6 @@ import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackList;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -40,17 +39,18 @@ import static com.tfar.simplecoloredblocks.Configs.configFile;
 @SuppressWarnings("unused")
 public class ColorHandler {
 
+  private static final Minecraft mc = Minecraft.getInstance();
+
   private static SimpleBlockResourcePack resourcePack = new SimpleBlockResourcePack();
 
   @SubscribeEvent
   public static void setupResourcePack(FMLClientSetupEvent event) {
-    //  if (config_loaded_blocks != -1)return;
     handle();
     ScreenManager.registerFactory(SimpleColoredBlocks.TYPE, ColorWheelScreen::new);
 
     ResourcePack.makeResourcePack();
 
-    ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getInstance(), "field_110448_aq");
+    ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, mc, "field_110448_aq");
     rps.addPackFinder(new IPackFinder() {
 
       @Override
@@ -68,9 +68,7 @@ public class ColorHandler {
       }
     });
 
-    Minecraft.getInstance().getResourceManager().addResourcePack(resourcePack);
-
-    //ForgeHooksClient.refreshResources(Minecraft.getInstance(), VanillaResourceType.MODELS);
+    mc.getResourceManager().addResourcePack(resourcePack);
   }
 
   private static void handle() {
@@ -91,23 +89,23 @@ public class ColorHandler {
 
 
   @SubscribeEvent
-  public static void registerBlockColors(ColorHandlerEvent.Block event) {
-    BlockColors colors = event.getBlockColors();
+  public static void registerBlockColors(final FMLClientSetupEvent event) {
+    final BlockColors colors = mc.getBlockColors();
     final IBlockColor compressedColor = (state, blockAccess, pos, tintIndex) -> getColor(state);
-    for (Block block : SimpleColoredBlocks.MOD_BLOCKS)
+    for (final Block block : SimpleColoredBlocks.MOD_BLOCKS)
       colors.register(compressedColor, block);
   }
   @SubscribeEvent
-  public static void registerItemColors(final ColorHandlerEvent.Item event) {
-    final ItemColors itemColors = event.getItemColors();
-    final BlockColors blockColors = event.getBlockColors();
+  public static void registerItemColors(final FMLClientSetupEvent event) {
 
+    final ItemColors itemColors = mc.getItemColors();
+    final BlockColors blockColors = mc.getBlockColors();
 
     final IItemColor itemBlockColor = (stack, tintIndex) -> {
       final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
       return blockColors.getColor(state, null, null,0);
     };
-    for (Block block : SimpleColoredBlocks.MOD_BLOCKS)
+    for (final Block block : SimpleColoredBlocks.MOD_BLOCKS)
       itemColors.register(itemBlockColor, block);
 
     final IItemColor itemColor = ColorHandler::getColor;
