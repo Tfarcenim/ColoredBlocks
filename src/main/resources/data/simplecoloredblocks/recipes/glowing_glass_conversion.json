@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "simpleblock",
+  "ingredients": [
+    {
+      "item": "simplecoloredblocks:color_wheel"
+    },
+    {
+      "item": "minecraft:sea_lantern"
+    },
+    {
+      "item": "minecraft:glass"
+    }
+  ],
+  "result": {
+    "item": "simplecoloredblocks:0r_0g_0b_glowing_glass",
+    "count": 2
+  }
+}

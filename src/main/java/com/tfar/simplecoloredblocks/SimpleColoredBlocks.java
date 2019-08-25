@@ -5,6 +5,7 @@ import com.tfar.simplecoloredblocks.block.SimpleGlassBlock;
 import com.tfar.simplecoloredblocks.block.SimpleGlowingBlock;
 import com.tfar.simplecoloredblocks.block.SimpleGlowingGlassBlock;
 import com.tfar.simplecoloredblocks.recipe.GlassRecipe;
+import com.tfar.simplecoloredblocks.recipe.GlowingGlassRecipe;
 import com.tfar.simplecoloredblocks.recipe.GlowingRecipe;
 import com.tfar.simplecoloredblocks.recipe.SimpleRecipe;
 import net.minecraft.block.Block;
@@ -61,6 +62,9 @@ public class SimpleColoredBlocks {
   @ObjectHolder(MODID + ":glowing")
   public static final IRecipeSerializer<?> GLOWING = null;
 
+  @ObjectHolder(MODID + ":glowing_glass")
+  public static final IRecipeSerializer<?> GLOWING_GLASS = null;
+
   @ObjectHolder(MODID + ":" + "color_wheel")
   public static Item color_wheel = null;
 
@@ -72,31 +76,6 @@ public class SimpleColoredBlocks {
       return new ItemStack(Blocks.CLAY);
     }
   };
-
-  public static SimpleColoredBlocks instance;
-
-  public SimpleColoredBlocks() {
-    instance = this;
-    // Register the setup method for modloading
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-
-    // Register ourselves for server and other game events we are interested in
-    MinecraftForge.EVENT_BUS.register(this);
-  }
-
-  private void setup(final FMLCommonSetupEvent event) {
-  }
-
-  // You can use SubscribeEvent and let the Event Bus discover methods to call
-  @SubscribeEvent
-  public void onServerStarting(FMLServerStartingEvent event) {
-    // do something when the server starts
-    try {
-      //    Scripts.jsonStuff();
-    } catch (Throwable e) {
-      e.printStackTrace();
-    }
-  }
 
   // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
   // Event bus for receiving Registry Events)
@@ -119,8 +98,8 @@ public class SimpleColoredBlocks {
           for (int b = 0; b < GRANULARITY; b++) {
             registerBlock(new SimpleBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_", registry);
             registerBlock(new SimpleGlassBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
-            registerBlock(new SimpleGlowingBlock(glowing,r,g,b),r + "r_" + g + "g_" + b + "b_glowing",registry);
-            registerBlock(new SimpleGlowingGlassBlock(glowing,r,g,b),r + "r_" + g + "g_" + b + "b_glowing_glass",registry);
+            registerBlock(new SimpleGlowingBlock(glowing, r, g, b), r + "r_" + g + "g_" + b + "b_glowing", registry);
+            registerBlock(new SimpleGlowingGlassBlock(glowing, r, g, b), r + "r_" + g + "g_" + b + "b_glowing_glass", registry);
           }
         }
       }
@@ -143,16 +122,16 @@ public class SimpleColoredBlocks {
       for (Block block : MOD_BLOCKS) {
         registerItem(new BlockItem(block, properties1) {
 
-          @Nonnull
-          @Override
-          public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-            return new TranslationTextComponent(getTranslationKey(),
-                    ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).r,
-                    ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).g,
-                    ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).b
-            );
-          }
-          },
+                       @Nonnull
+                       @Override
+                       public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+                         return new TranslationTextComponent(getTranslationKey(),
+                                 ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).r,
+                                 ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).g,
+                                 ((SimpleBlock) ((BlockItem) stack.getItem()).getBlock()).b
+                         );
+                       }
+                     },
                 block.getRegistryName().toString(), registry);
       }
     }
@@ -181,6 +160,8 @@ public class SimpleColoredBlocks {
       registry.register(glass.setRegistryName("glass"));
       SpecialRecipeSerializer<GlowingRecipe> glowing = new SpecialRecipeSerializer<>(GlowingRecipe::new);
       registry.register(glowing.setRegistryName("glowing"));
+      SpecialRecipeSerializer<GlowingGlassRecipe> glowing_glass = new SpecialRecipeSerializer<>(GlowingGlassRecipe::new);
+      registry.register(glowing_glass.setRegistryName("glowing_glass"));
     }
   }
 }

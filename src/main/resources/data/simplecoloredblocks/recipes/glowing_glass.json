@@ -1,0 +1,15 @@
+{
+  "type": "simplecoloredblocks:glowing_glass",
+  "group": "simpleblock",
+  "ingredients": [
+    {
+      "item": "simplecoloredblocks:color_wheel"
+    },
+    {
+      "item": "simplecoloredblocks:0r_0g_0b_glowing_glass"
+    }
+  ],
+  "result": {
+    "item": "simplecoloredblocks:0r_0g_0b_glowing_glass"
+  }
+}
