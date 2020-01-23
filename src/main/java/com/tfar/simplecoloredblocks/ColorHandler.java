@@ -4,10 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tfar.simplecoloredblocks.block.SimpleBlock;
+import com.tfar.simplecoloredblocks.block.SimpleGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -16,10 +19,7 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.PackCompatibility;
-import net.minecraft.resources.ResourcePackInfo;
-import net.minecraft.resources.ResourcePackList;
+import net.minecraft.resources.*;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,12 +63,12 @@ public class ColorHandler {
         }
         @SuppressWarnings("unchecked")
         T var3 = (T) new ClientResourcePackInfo(SimpleColoredBlocks.MODID, true, () -> resourcePack, new StringTextComponent(resourcePack.getName()), new StringTextComponent("Assets for Compressed"),
-                PackCompatibility.COMPATIBLE, ResourcePackInfo.Priority.BOTTOM, true, img,true);
+                PackCompatibility.COMPATIBLE, ResourcePackInfo.Priority.TOP, true, img,true);
         nameToPackMap.put(SimpleColoredBlocks.MODID, var3);
       }
     });
 
-    mc.getResourceManager().addResourcePack(resourcePack);
+    ((SimpleReloadableResourceManager)mc.getResourceManager()).addResourcePack(resourcePack);
   }
 
   private static void handle() {
@@ -94,7 +94,11 @@ public class ColorHandler {
     final IBlockColor compressedColor = (state, blockAccess, pos, tintIndex) -> getColor(state);
     for (final Block block : SimpleColoredBlocks.MOD_BLOCKS)
       colors.register(compressedColor, block);
+
+    SimpleColoredBlocks.MOD_BLOCKS.stream().filter(SimpleGlassBlock.class::isInstance)
+            .forEach(simpleBlock -> RenderTypeLookup.setRenderLayer(simpleBlock, RenderType.func_228645_f_()));
   }
+
   @SubscribeEvent
   public static void registerItemColors(final FMLClientSetupEvent event) {
 
@@ -103,7 +107,7 @@ public class ColorHandler {
 
     final IItemColor itemBlockColor = (stack, tintIndex) -> {
       final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-      return blockColors.getColor(state, null, null,0);
+      return blockColors.func_228054_a_(state, null, null,0);
     };
     for (final Block block : SimpleColoredBlocks.MOD_BLOCKS)
       itemColors.register(itemBlockColor, block);

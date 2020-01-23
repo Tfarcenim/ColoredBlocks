@@ -85,13 +85,12 @@ public class SimpleColoredBlocks {
     @SubscribeEvent
     public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 
-      handleConfig();
+  handleConfig();
+  IForgeRegistry<Block> registry = blockRegistryEvent.getRegistry();
 
-      IForgeRegistry<Block> registry = blockRegistryEvent.getRegistry();
+  Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
-      Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
-
-      Block.Properties glowing = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F).lightValue(15);
+  Block.Properties glowing = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F).lightValue(15);
 
       for (int r = 0; r < GRANULARITY; r++) {
         for (int g = 0; g < GRANULARITY; g++) {

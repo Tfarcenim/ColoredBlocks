@@ -1,6 +1,6 @@
 package com.tfar.simplecoloredblocks;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,8 +24,8 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
 
   @Override
   protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
-      GlStateManager.disableLighting();
-      GlStateManager.disableBlend();
+      RenderSystem.disableLighting();
+    RenderSystem.disableBlend();
       this.font.drawString(this.title.getFormattedText(), 40, 6, 0x404040);
       this.font.drawString(I18n.format("text.simplecoloredblocks.color_wheel_container.preview"),125,6,0x404040);
   }
@@ -39,7 +39,7 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
    */
   @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-    GlStateManager.color4f(1, 1, 1, 1);
+    RenderSystem.color4f(1, 1, 1, 1);
     this.minecraft.getTextureManager().bindTexture(wheelResource);
     int i = (this.width - this.xSize) / 2;
     int j = (this.height - this.ySize) / 2;
@@ -49,7 +49,7 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
     float g = (float)this.container.getSlot(1).getStack().getCount()  / Configs.GRANULARITY;
     float b = (float)this.container.getSlot(2).getStack().getCount()  / Configs.GRANULARITY;
 
-    GlStateManager.color3f(r,g,b);
+    RenderSystem.color3f(r,g,b);
     this.blit(i + 134, j + 20, 134, 20, 16, 16);
 
   }
@@ -95,7 +95,7 @@ public class ColorWheelScreen extends ContainerScreen<ColorWheelContainer> imple
     this.renderBackground();
     super.render(mouseX, mouseY, partialTicks);
     this.renderHoveredToolTip(mouseX, mouseY);
-    GlStateManager.disableLighting();
-    GlStateManager.disableBlend();
+    RenderSystem.disableLighting();
+    RenderSystem.disableBlend();
   }
 }

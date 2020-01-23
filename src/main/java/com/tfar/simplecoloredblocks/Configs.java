@@ -12,7 +12,6 @@ public class Configs {
     public static Gson g = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     public static final File configFile = new File("config/"+SimpleColoredBlocks.MODID+".json");
     private static BufferedInputStream in = new BufferedInputStream(Configs.class.getResourceAsStream("/config.json"));
-    public static int loaded;
 
   private static JsonObject colors;
 
@@ -52,9 +51,8 @@ public class Configs {
         FileReader reader = new FileReader(configFile);
         JsonObject cfg = new JsonParser().parse(reader).getAsJsonObject();
         GRANULARITY = cfg.get("colors").getAsInt();
-        loaded = cfg.get("loaded").getAsInt();
       } catch (Exception e) {
-        SimpleColoredBlocks.LOGGER.fatal(e);
+        e.printStackTrace();
       }
     }
   }

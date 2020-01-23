@@ -2,7 +2,6 @@ package com.tfar.simplecoloredblocks.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -15,12 +14,6 @@ public class SimpleGlassBlock extends SimpleBlock {
 
   public SimpleGlassBlock(Properties properties, int r, int g, int b) {
     super(properties,r,g,b);
-  }
-
-  @Nonnull
-  @Override
-  public BlockRenderLayer getRenderLayer() {
-    return BlockRenderLayer.TRANSLUCENT;
   }
 
   @OnlyIn(Dist.CLIENT)

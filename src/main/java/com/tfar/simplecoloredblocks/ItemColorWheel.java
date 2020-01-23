@@ -33,12 +33,9 @@ public class ItemColorWheel extends Item {
   public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
 
     if (!world.isRemote) {
-      ItemStack stack = player.getHeldItem(hand);
-
       NetworkHooks.openGui((ServerPlayerEntity) player, new Handler(), data -> data.writeBlockPos(player.getPosition()));
     }
     return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
-    //return super.onItemRightClick(world, player, hand);
   }
 
   @Override

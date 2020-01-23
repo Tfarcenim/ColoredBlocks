@@ -9,7 +9,6 @@ import net.minecraft.resources.data.PackMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.logging.log4j.Level;
 
 import java.io.*;
 import java.util.Collection;
@@ -33,7 +32,7 @@ public class SimpleBlockResourcePack implements IResourcePack {
         String realFileName = file.getCanonicalFile().getName();
         if (!realFileName.equals(file.getName()))
         {
-          SimpleColoredBlocks.LOGGER.warn("[SimpleColoredBlocks] Resource Location " + location.toString() + " only matches the file " + realFileName + " because RL is running in an environment that isn't case sensitive in regards to file names. This will not work properly on for example Linux.");
+        //  SimpleColoredBlocks.LOGGER.warn("[SimpleColoredBlocks] Resource Location " + location.toString() + " only matches the file " + realFileName + " because RL is running in an environment that isn't case sensitive in regards to file names. This will not work properly on for example Linux.");
         }
 
         return new FileInputStream(file);
@@ -42,12 +41,33 @@ public class SimpleBlockResourcePack implements IResourcePack {
   }
 
   @Override
+  public Collection<ResourceLocation> func_225637_a_(ResourcePackType p_225637_1_, String p_225637_2_, String p_225637_3_, int p_225637_4_, Predicate<String> p_225637_5_) {
+    File folder = new File(Minecraft.getInstance().gameDir, "scb_resources/");
+    if (!folder.exists()) {
+      folder.mkdir();
+    }
+    HashSet<ResourceLocation> folders = new HashSet<>();
+
+    //SimpleColoredBlocks.LOGGER.log(Level.DEBUG, "Resource Loader Domains: ");
+
+    File[] resourceDomains = folder.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+    for (File resourceFolder : resourceDomains)
+    {
+      //SimpleColoredBlocks.LOGGER.info( "[NormalResourceLoader]  - " + resourceFolder.getName() + " | " + resourceFolder.getAbsolutePath());
+      folders.add(new ResourceLocation(SimpleColoredBlocks.MODID,resourceFolder.getName()));
+    }
+
+    return folders;
+  }
+
+  @Override
   public boolean resourceExists(ResourcePackType type, ResourceLocation location) {
       File fileRequested = new File(new File( "scb_resources/" + location.getNamespace()), location.getPath());
 
       if (!fileRequested.isFile())
       {
-        //SimpleColoredBlocks.LOGGER.warn( "[SimpleColoredBlocks] Asked for resource " + location.toString() + " but can't find a file at " + fileRequested.getAbsolutePath());
+       // SimpleColoredBlocks.LOGGER.warn( "[SimpleColoredBlocks] Asked for resource " + location.toString() + " but can't find a file at " + fileRequested.getAbsolutePath());
       }
       return fileRequested.isFile();
     }
@@ -68,22 +88,22 @@ public class SimpleBlockResourcePack implements IResourcePack {
     return "SimpleColoredBlocks resource pack";
   }
 
-  @Override
+ // @Override
   public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType arg0, String arg1, int arg2, Predicate<String> arg3) {
-    File folder = new File(Minecraft.getInstance().gameDir, "scb_resources");
+    File folder = new File(Minecraft.getInstance().gameDir, "scb_resources/");
     if (!folder.exists())
     {
       folder.mkdir();
     }
     HashSet<ResourceLocation> folders = new HashSet<>();
 
-    SimpleColoredBlocks.LOGGER.log(Level.DEBUG, "Resource Loader Domains: ");
+    //SimpleColoredBlocks.LOGGER.log(Level.DEBUG, "Resource Loader Domains: ");
 
     File[] resourceDomains = folder.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
     for (File resourceFolder : resourceDomains)
     {
-      SimpleColoredBlocks.LOGGER.info( "[NormalResourceLoader]  - " + resourceFolder.getName() + " | " + resourceFolder.getAbsolutePath());
+     // SimpleColoredBlocks.LOGGER.info( "[NormalResourceLoader]  - " + resourceFolder.getName() + " | " + resourceFolder.getAbsolutePath());
       folders.add(new ResourceLocation(SimpleColoredBlocks.MODID,resourceFolder.getName()));
     }
 
@@ -91,13 +111,13 @@ public class SimpleBlockResourcePack implements IResourcePack {
   }
 
   @Override
-  public InputStream getRootResourceStream(String arg0) throws IOException {
+  public InputStream getRootResourceStream(String location) throws IOException {
     File file = new File(Minecraft.getInstance().gameDir, "scb_resources/");
 
     String realFileName = file.getCanonicalFile().getName();
     if (!realFileName.equals(file.getName()))
     {
-      //SimpleColoredBlocks.LOGGER.log(Level.WARN, "[SimpleColoredBlocks] Resource Location " + location.toString() + " only matches the file " + realFileName + " because RL is running in an environment that isn't case sensitive in regards to file names. This will not work properly on for example Linux.");
+   //   SimpleColoredBlocks.LOGGER.log(Level.WARN, "[SimpleColoredBlocks] Resource Location " + location.toString() + " only matches the file " + realFileName + " because RL is running in an environment that isn't case sensitive in regards to file names. This will not work properly on for example Linux.");
     }
 
     return new FileInputStream(file);
