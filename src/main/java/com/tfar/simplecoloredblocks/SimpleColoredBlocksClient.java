@@ -37,7 +37,7 @@ import static com.tfar.simplecoloredblocks.Configs.configFile;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD,value = Dist.CLIENT)
 @SuppressWarnings("unused")
-public class ColorHandler {
+public class SimpleColoredBlocksClient {
 
   private static final Minecraft mc = Minecraft.getInstance();
 
@@ -96,7 +96,7 @@ public class ColorHandler {
       colors.register(compressedColor, block);
 
     SimpleColoredBlocks.MOD_BLOCKS.stream().filter(SimpleGlassBlock.class::isInstance)
-            .forEach(simpleBlock -> RenderTypeLookup.setRenderLayer(simpleBlock, RenderType.func_228645_f_()));
+            .forEach(simpleBlock -> RenderTypeLookup.setRenderLayer(simpleBlock, RenderType.translucent()));
   }
 
   @SubscribeEvent
@@ -107,12 +107,12 @@ public class ColorHandler {
 
     final IItemColor itemBlockColor = (stack, tintIndex) -> {
       final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-      return blockColors.func_228054_a_(state, null, null,0);
+      return blockColors.getColor(state, null, null,0);
     };
     for (final Block block : SimpleColoredBlocks.MOD_BLOCKS)
       itemColors.register(itemBlockColor, block);
 
-    final IItemColor itemColor = ColorHandler::getColor;
+    final IItemColor itemColor = SimpleColoredBlocksClient::getColor;
     itemColors.register(itemColor,SimpleColoredBlocks.color_wheel);
   }
 

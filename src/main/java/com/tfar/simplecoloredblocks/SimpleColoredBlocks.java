@@ -96,9 +96,9 @@ public class SimpleColoredBlocks {
         for (int g = 0; g < GRANULARITY; g++) {
           for (int b = 0; b < GRANULARITY; b++) {
             registerBlock(new SimpleBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_", registry);
-            registerBlock(new SimpleGlassBlock(properties, r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
+            registerBlock(new SimpleGlassBlock(properties.notSolid(), r, g, b), r + "r_" + g + "g_" + b + "b_glass", registry);
             registerBlock(new SimpleGlowingBlock(glowing, r, g, b), r + "r_" + g + "g_" + b + "b_glowing", registry);
-            registerBlock(new SimpleGlowingGlassBlock(glowing, r, g, b), r + "r_" + g + "g_" + b + "b_glowing_glass", registry);
+            registerBlock(new SimpleGlowingGlassBlock(glowing.notSolid(), r, g, b), r + "r_" + g + "g_" + b + "b_glowing_glass", registry);
           }
         }
       }

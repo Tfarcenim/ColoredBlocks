@@ -27,8 +27,8 @@ public class ResourcePack {
         String str = "{\n" +
                 "    \"pack\": {\n" +
                 "        \"description\": \"Assets for Simple Colored Blocks, DO NOT REMOVE!\",\n" +
-                "        \"pack_format\": 4,\n" +
-                "        \"_comment\": \"A pack_format of 4 requires json lang files. Note: we require v4 pack meta for all mods.\"\n" +
+                "        \"pack_format\": 5,\n" +
+                "        \"_comment\": \"A pack_format of 5 requires json lang files. Note: we require v5 pack meta for all mods.\"\n" +
                 "    }\n" +
                 "}";
         FileWriter writer = new FileWriter(mcmeta);
