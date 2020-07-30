@@ -2,22 +2,18 @@ package com.tfar.simplecoloredblocks.block;
 
 import com.tfar.simplecoloredblocks.Configs;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SimpleBlock extends Block {
@@ -42,15 +38,12 @@ public class SimpleBlock extends Block {
     String str = "#"+Integer.toHexString(hexcolor).toUpperCase();
 
     tooltip.add(new StringTextComponent(str));
-  }@Nonnull
-  @Override
-  public ITextComponent getNameTextComponent() {
-    return new TranslationTextComponent(this.getTranslationKey(),r,g,b);
   }
 
+  @Nonnull
   @Override
-  public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-    return new ArrayList<>(Collections.singletonList(new ItemStack(this)));
+  public IFormattableTextComponent getTranslatedName() {
+    return new TranslationTextComponent(this.getTranslationKey(),r,g,b);
   }
 
   @Nonnull

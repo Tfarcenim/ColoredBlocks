@@ -41,52 +41,10 @@ public class SimpleColoredBlocksClient {
 
   private static final Minecraft mc = Minecraft.getInstance();
 
-  private static SimpleBlockResourcePack resourcePack = new SimpleBlockResourcePack();
-
   @SubscribeEvent
   public static void setupResourcePack(FMLClientSetupEvent event) {
-    handle();
     ScreenManager.registerFactory(SimpleColoredBlocks.TYPE, ColorWheelScreen::new);
-
-    ResourcePack.makeResourcePack();
-
-    ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, mc, "field_110448_aq");
-    rps.addPackFinder(new IPackFinder() {
-
-      @Override
-      public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, ResourcePackInfo.IFactory<T> packInfoFactory) {
-        NativeImage img = null;
-        try {
-          img = NativeImage.read(resourcePack.getRootResourceStream("pack.png"));
-        } catch (IOException e) {
-          LogManager.getLogger().error("Could not load simplecxoloredblocks's pack.png", e);
-        }
-        @SuppressWarnings("unchecked")
-        T var3 = (T) new ClientResourcePackInfo(SimpleColoredBlocks.MODID, true, () -> resourcePack, new StringTextComponent(resourcePack.getName()), new StringTextComponent("Assets for Compressed"),
-                PackCompatibility.COMPATIBLE, ResourcePackInfo.Priority.TOP, true, img,true);
-        nameToPackMap.put(SimpleColoredBlocks.MODID, var3);
-      }
-    });
-
-    ((SimpleReloadableResourceManager)mc.getResourceManager()).addResourcePack(resourcePack);
   }
-
-  private static void handle() {
-
-    try {
-      FileReader reader = new FileReader(configFile);
-      JsonElement element = new JsonParser().parse(reader);
-      FileWriter writer = new FileWriter(configFile);
-      JsonObject config = element.getAsJsonObject();
-      config.remove("loaded_blocks");
-      config.addProperty("loaded_blocks", SimpleColoredBlocks.MOD_BLOCKS.size());
-      writer.write(Configs.g.toJson(config,JsonObject.class));
-      writer.flush();
-    } catch (IOException ugh) {
-      throw new RuntimeException("Impossible, the file existed moments ago", ugh);
-    }
-  }
-
 
   @SubscribeEvent
   public static void registerBlockColors(final FMLClientSetupEvent event) {
@@ -96,7 +54,7 @@ public class SimpleColoredBlocksClient {
       colors.register(compressedColor, block);
 
     SimpleColoredBlocks.MOD_BLOCKS.stream().filter(SimpleGlassBlock.class::isInstance)
-            .forEach(simpleBlock -> RenderTypeLookup.setRenderLayer(simpleBlock, RenderType.translucent()));
+            .forEach(simpleBlock -> RenderTypeLookup.setRenderLayer(simpleBlock, RenderType.getTranslucent()));
   }
 
   @SubscribeEvent

@@ -8,6 +8,10 @@ import com.tfar.simplecoloredblocks.recipe.GlassRecipe;
 import com.tfar.simplecoloredblocks.recipe.GlowingGlassRecipe;
 import com.tfar.simplecoloredblocks.recipe.GlowingRecipe;
 import com.tfar.simplecoloredblocks.recipe.SimpleRecipe;
+import net.devtech.arrp.ARRP;
+import net.devtech.arrp.api.RRPEvent;
+import net.devtech.arrp.api.RuntimeResourcePack;
+import net.devtech.arrp.json.loot.JLootTable;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -19,10 +23,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -39,6 +45,7 @@ import java.util.Set;
 
 import static com.tfar.simplecoloredblocks.Configs.GRANULARITY;
 import static com.tfar.simplecoloredblocks.Configs.handleConfig;
+import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -69,6 +76,34 @@ public class SimpleColoredBlocks {
   public static Item color_wheel = null;
 
   public static final Set<SimpleBlock> MOD_BLOCKS = new LinkedHashSet<>();
+  public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create(MODID+":builtin");
+
+  public SimpleColoredBlocks() {
+    EVENT_BUS.addListener(this::registerPack);
+    IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    bus.addListener(this::common);
+  }
+
+  private void registerPack(RRPEvent e) {
+    e.packs.add(RESOURCE_PACK);
+  }
+
+  private void common(FMLCommonSetupEvent e) {
+    for (Block block : MOD_BLOCKS) {
+      RESOURCE_PACK.addLootTable(blockLootTable(block), JLootTable.loot("minecraft:block")
+              .pool(JLootTable.pool()
+                      .rolls(1)
+                      .entry(JLootTable.entry()
+                              .type("minecraft:item")
+                              .name("minecraft:diamond"))
+                      .condition(JLootTable.condition("minecraft:survives_explosion"))));
+    }
+  }
+
+  public static ResourceLocation blockLootTable(Block block) {
+    ResourceLocation identifier = block.getRegistryName();
+    return new ResourceLocation(identifier.getNamespace(),"blocks/"+ identifier.getPath());
+  }
 
   public static final ItemGroup tab = new ItemGroup(MODID) {
     @Override
@@ -90,7 +125,7 @@ public class SimpleColoredBlocks {
 
   Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
-  Block.Properties glowing = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F).lightValue(15);
+  Block.Properties glowing = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F).setLightLevel(state -> 15);
 
       for (int r = 0; r < GRANULARITY; r++) {
         for (int g = 0; g < GRANULARITY; g++) {
